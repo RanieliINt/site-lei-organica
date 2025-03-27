@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Questões - Lei Orgânica SJBV</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .question {
+      background: #fff;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    .option {
+      display: block;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin: 5px 0;
+      cursor: pointer;
+    }
+    .option:hover {
+      background-color: #f0f0f0;
+    }
+    .option.eliminated {
+      background-color: #ffe6e6;
+      text-decoration: line-through;
+      color: #999;
+    }
+    .correct {
+      background-color: #d4edda !important;
+    }
+    .incorrect {
+      background-color: #f8d7da !important;
+    }
+    button {
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .add-form {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    textarea, input, select {
+      width: 100%;
+      margin: 5px 0;
+      padding: 8px;
+    }
+    .filter {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Questões - Lei Orgânica de São João da Boa Vista</h1>
+
+  <div class="filter">
+    <label for="temaSelect">Filtrar por tema:</label>
+    <select id="temaSelect" onchange="filtrarPorTema()">
+      <option value="todos">Todos os Títulos</option>
+      <option value="Título I">Título I – Do Município</option>
+      <option value="Título II">Título II – Da Organização dos Poderes</option>
+      <option value="Título III">Título III – Da Administração Municipal</option>
+      <option value="Título IV">Título IV – Do Planejamento Municipal, da Política Urbana e da Proteção do Meio Ambiente</option>
+      <option value="Título V">Título V – Da Atividade Econômica e Social do Município</option>
+      <option value="Título VI">Título VI – Das Disposições Gerais e Transitórias</option>
+    </select>
+  </div>
+
+  <div id="questions"></div>
+
+  <div class="add-form">
+    <h3>Adicionar Nova Questão</h3>
+    <textarea id="newQuestion" placeholder="Digite a pergunta..."></textarea>
+    <input id="optA" placeholder="Alternativa A" />
+    <input id="optB" placeholder="Alternativa B" />
+    <input id="optC" placeholder="Alternativa C" />
+    <input id="optD" placeholder="Alternativa D" />
+    <input id="correct" placeholder="Letra da correta (ex: A)" />
+    <input id="tema" placeholder="Título (ex: Título I)" />
+    <button onclick="addQuestion()">Adicionar</button>
+  </div>
+
+  <script>
+    let questions = [];
+
+    function renderQuestions(filtro = "todos") {
+      const container = document.getElementById("questions");
+      container.innerHTML = "";
+
+      questions.forEach((q, index) => {
+        if (filtro !== "todos" && q.tema !== filtro) return;
+
+        const div = document.createElement("div");
+        div.className = "question";
+
+        const title = document.createElement("p");
+        title.innerText = `${index + 1}. ${q.text}`;
+        div.appendChild(title);
+
+        ['A', 'B', 'C', 'D'].forEach(letter => {
+          const opt = document.createElement("div");
+          opt.className = "option";
+          opt.innerText = `${letter}) ${q.options[letter]}`;
+
+          opt.onclick = () => {
+            if (letter === q.correct) {
+              opt.classList.add("correct");
+            } else {
+              opt.classList.add("incorrect");
+            }
+          };
+
+          opt.oncontextmenu = (e) => {
+            e.preventDefault();
+            opt.classList.toggle("eliminated");
+          };
+
+          div.appendChild(opt);
+        });
+
+        container.appendChild(div);
+      });
+    }
+
+    function filtrarPorTema() {
+      const tema = document.getElementById("temaSelect").value;
+      renderQuestions(tema);
+    }
+
+    function addQuestion() {
+      const text = document.getElementById("newQuestion").value;
+      const options = {
+        A: document.getElementById("optA").value,
+        B: document.getElementById("optB").value,
+        C: document.getElementById("optC").value,
+        D: document.getElementById("optD").value,
+      };
+      const correct = document.getElementById("correct").value.toUpperCase();
+      const tema = document.getElementById("tema").value;
+
+      if (!text || !options.A || !options.B || !options.C || !options.D || !correct || !tema) {
+        alert("Preencha todos os campos.");
+        return;
+      }
+
+      questions.push({ text, options, correct, tema });
+      renderQuestions();
+
+      document.getElementById("newQuestion").value = "";
+      document.getElementById("optA").value = "";
+      document.getElementById("optB").value = "";
+      document.getElementById("optC").value = "";
+      document.getElementById("optD").value = "";
+      document.getElementById("correct").value = "";
+      document.getElementById("tema").value = "";
+    }
+
+    // Aqui deve estar o array com TODAS as questões dos Títulos I a VI
+    // Para manter este exemplo limpo, estamos deixando o array vazio acima
+    // No seu projeto real, você deve colar aqui o array completo de questões que criamos
+
+    renderQuestions();
+  </script>
+</body>
+</html>
+Versão 2
